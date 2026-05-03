@@ -2,6 +2,9 @@ import Link from "next/link";
 import { requireUser } from "@/auth/server";
 import type { Role } from "@/auth/server";
 
+// Every page in the app shell reads the auth cookie / DB; never prerender.
+export const dynamic = "force-dynamic";
+
 type NavItem = { href: string; label: string };
 
 const NAV: Record<Role, NavItem[]> = {

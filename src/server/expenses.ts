@@ -9,6 +9,7 @@ import { requirePropertyAccess, requireUser } from "@/auth/server";
 import { withAudit } from "@/lib/audit";
 import { toCents, formatEuro } from "@/lib/money";
 import { sendApprovalRequestEmail } from "@/lib/email";
+import { sendPush } from "@/lib/push";
 
 const DEFAULT_THRESHOLD_CENTS = 50_000; // €500 per spec §6
 
@@ -97,18 +98,27 @@ export async function logExpense(input: z.infer<typeof LogExpenseInput>) {
     )[0];
 
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-    await Promise.all(
-      approvers.map((a) =>
+    const propertyName = property?.name ?? "your property";
+    const amountDisplay = formatEuro(amountCents);
+    await Promise.all([
+      ...approvers.map((a) =>
         sendApprovalRequestEmail({
           to: a.email,
-          propertyName: property?.name ?? "your property",
-          amountDisplay: formatEuro(amountCents),
+          propertyName,
+          amountDisplay,
           description: data.description,
           approveUrl: `${baseUrl}/expenses/${row.id}`,
         }),
       ),
-    );
-    // Push notifications fire from src/lib/push.ts in slice 7.
+      ...approvers.map((a) =>
+        sendPush(a.id, {
+          title: `Approval needed: ${amountDisplay}`,
+          body: `${propertyName} — ${data.description.slice(0, 80)}`,
+          url: `/expenses/${row.id}`,
+          tag: `approval-${row.id}`,
+        }),
+      ),
+    ]);
   }
 
   revalidatePath("/dashboard");

@@ -5,29 +5,35 @@ import * as schema from "./schema";
 
 // Postgres connection. Supabase pooled URL (DATABASE_URL) is correct for
 // serverless. DIRECT_URL is reserved for migrations / drizzle-kit.
+//
+// We resolve lazily so that build-time page collection (which loads modules
+// without intending to query) doesn't crash when DATABASE_URL is unset.
 
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString && process.env.NODE_ENV === "production") {
-  // Fail loud in prod; tolerate missing in dev so first boot doesn't crash.
-  throw new Error("DATABASE_URL is required in production");
+type DbInstance = ReturnType<typeof drizzle<typeof schema>>;
+
+let cached: DbInstance | null = null;
+
+function resolveDb(): DbInstance {
+  if (cached) return cached;
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    throw new Error(
+      "DATABASE_URL is not set. Configure it in .env.local for dev or in your Vercel project settings.",
+    );
+  }
+  const client = postgres(url, { prepare: false, max: 10 });
+  cached = drizzle(client, { schema });
+  return cached;
 }
 
-const client = connectionString
-  ? postgres(connectionString, { prepare: false, max: 10 })
-  : null;
-
-// Lazy proxy so importing this module doesn't crash when the DB is absent.
-export const db = client
-  ? drizzle(client, { schema })
-  : (new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(
-            "DATABASE_URL is not set — DB calls are unavailable. Set it in .env.local.",
-          );
-        },
-      },
-    ) as ReturnType<typeof drizzle<typeof schema>>);
+// Proxy that lazily resolves the real client. Importing this module never
+// connects; the connection only happens on the first query.
+export const db = new Proxy({} as DbInstance, {
+  get(_target, prop) {
+    const real = resolveDb() as unknown as Record<string | symbol, unknown>;
+    const value = real[prop];
+    return typeof value === "function" ? (value as (...args: unknown[]) => unknown).bind(real) : value;
+  },
+});
 
 export { schema };
