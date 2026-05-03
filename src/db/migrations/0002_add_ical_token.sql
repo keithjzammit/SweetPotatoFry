@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "ical_token" varchar(64);

@@ -1,9 +1,16 @@
+import { eq } from "drizzle-orm";
+import { db } from "@/db/client";
+import { users } from "@/db/schema";
 import { requireUser } from "@/auth/server";
 import { PushEnable } from "@/components/push-enable";
 import { LocaleToggle } from "./locale-toggle";
+import { CalendarSection } from "./calendar-section";
 
 export default async function SettingsPage() {
   const user = await requireUser();
+  const userRow = (await db.select().from(users).where(eq(users.id, user.id)).limit(1))[0];
+  const googleConnected = !!userRow?.googleRefreshToken;
+  const icalToken = userRow?.icalToken ?? null;
   return (
     <section className="space-y-6">
       <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
@@ -24,6 +31,8 @@ export default async function SettingsPage() {
         <h2 className="text-sm font-semibold">Language</h2>
         <LocaleToggle current={user.locale} />
       </div>
+
+      <CalendarSection googleConnected={googleConnected} icalToken={icalToken} />
 
       <div className="rounded-lg border bg-card p-4 space-y-3">
         <h2 className="text-sm font-semibold">Push notifications</h2>

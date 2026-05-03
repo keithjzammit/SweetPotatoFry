@@ -90,6 +90,8 @@ export const users = pgTable("users", {
   // Spec §4: encrypted at rest. Stored as ciphertext base64; encrypt in app layer.
   googleRefreshToken: text("google_refresh_token"),
   pushSubscriptions: jsonb("push_subscriptions").$type<PushSubscriptionJson[]>().notNull().default(sql`'[]'::jsonb`),
+  // Per-user secret used in the public iCal feed URL (spec §8). Rotatable.
+  icalToken: varchar("ical_token", { length: 64 }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
