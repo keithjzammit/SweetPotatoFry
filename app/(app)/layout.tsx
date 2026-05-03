@@ -1,34 +1,36 @@
 import Link from "next/link";
 import { requireUser } from "@/auth/server";
 import type { Role } from "@/auth/server";
+import { makeT } from "@/i18n/get-messages";
 
 // Every page in the app shell reads the auth cookie / DB; never prerender.
 export const dynamic = "force-dynamic";
 
-type NavItem = { href: string; label: string };
+type NavKey = "dashboard" | "properties" | "tax" | "people" | "settings";
 
-const NAV: Record<Role, NavItem[]> = {
+const NAV: Record<Role, Array<{ href: string; key: NavKey }>> = {
   owner: [
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "/properties", label: "Properties" },
-    { href: "/tax", label: "Tax" },
-    { href: "/people", label: "People" },
-    { href: "/settings", label: "Settings" },
+    { href: "/dashboard", key: "dashboard" },
+    { href: "/properties", key: "properties" },
+    { href: "/tax", key: "tax" },
+    { href: "/people", key: "people" },
+    { href: "/settings", key: "settings" },
   ],
   co_owner: [
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "/properties", label: "Properties" },
-    { href: "/settings", label: "Settings" },
+    { href: "/dashboard", key: "dashboard" },
+    { href: "/properties", key: "properties" },
+    { href: "/settings", key: "settings" },
   ],
   manager: [
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "/properties", label: "Properties" },
-    { href: "/settings", label: "Settings" },
+    { href: "/dashboard", key: "dashboard" },
+    { href: "/properties", key: "properties" },
+    { href: "/settings", key: "settings" },
   ],
 };
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await requireUser();
+  const t = makeT(user.locale);
   const items = NAV[user.role];
   return (
     <div className="min-h-screen pb-20 md:pb-0">
@@ -40,15 +42,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <nav className="hidden items-center gap-4 text-sm md:flex">
             {items.map((it) => (
               <Link key={it.href} href={it.href} className="text-muted-foreground hover:text-foreground">
-                {it.label}
+                {t(`nav.${it.key}`)}
               </Link>
             ))}
             <form action="/auth/sign-out" method="post">
-              <button
-                type="submit"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Sign out
+              <button type="submit" className="text-muted-foreground hover:text-foreground">
+                {t("common.signOut")}
               </button>
             </form>
           </nav>
@@ -63,7 +62,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             href={it.href}
             className="flex h-16 items-center justify-center text-xs text-muted-foreground"
           >
-            {it.label}
+            {t(`nav.${it.key}`)}
           </Link>
         ))}
       </nav>

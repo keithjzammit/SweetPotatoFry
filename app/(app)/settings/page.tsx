@@ -1,5 +1,6 @@
 import { requireUser } from "@/auth/server";
 import { PushEnable } from "@/components/push-enable";
+import { LocaleToggle } from "./locale-toggle";
 
 export default async function SettingsPage() {
   const user = await requireUser();
@@ -16,9 +17,12 @@ export default async function SettingsPage() {
           <dd>{user.email}</dd>
           <dt className="text-muted-foreground">Role</dt>
           <dd>{user.role}</dd>
-          <dt className="text-muted-foreground">Locale</dt>
-          <dd>{user.locale}</dd>
         </dl>
+      </div>
+
+      <div className="rounded-lg border bg-card p-4 space-y-3">
+        <h2 className="text-sm font-semibold">Language</h2>
+        <LocaleToggle current={user.locale} />
       </div>
 
       <div className="rounded-lg border bg-card p-4 space-y-3">

@@ -91,6 +91,7 @@ export default async function PropertyDetailPage({
         <TabLink href={`/properties/${id}/expenses`}>Expenses</TabLink>
         <TabLink href={`/properties/${id}/rent`}>Rent</TabLink>
         <TabLink href={`/properties/${id}/works`}>Works</TabLink>
+        <TabLink href={`/properties/${id}/messages`}>Messages</TabLink>
       </nav>
     </article>
   );

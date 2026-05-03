@@ -1,0 +1,22 @@
+{
+  "common": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "back": "Back"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "properties": "Properties",
+    "tax": "Tax",
+    "people": "People",
+    "settings": "Settings"
+  },
+  "messages": {
+    "translate": "Translate",
+    "showOriginal": "Show original",
+    "translateAll": "Translate all"
+  }
+}
