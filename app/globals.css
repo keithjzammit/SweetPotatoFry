@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Off-white background, warm neutral. Spec §14: avoid pure white. */
+    --background: 40 20% 98%;
+    --foreground: 222 14% 18%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 14% 18%;
+
+    --primary: 24 60% 42%;             /* one accent, warm sweet-potato tone */
+    --primary-foreground: 40 30% 98%;
+
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 14% 18%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 222 9% 46%;
+
+    --accent: 220 14% 96%;
+    --accent-foreground: 222 14% 18%;
+
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 40 30% 98%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 24 60% 42%;
+
+    --radius: 0.625rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+  /* Spec §14: numbers in tabular figures */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
