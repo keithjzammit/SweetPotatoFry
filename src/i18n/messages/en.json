@@ -12,7 +12,8 @@
     "properties": "Properties",
     "tax": "Tax",
     "people": "People",
-    "settings": "Settings"
+    "settings": "Settings",
+    "statements": "Statements"
   },
   "messages": {
     "translate": "Translate",

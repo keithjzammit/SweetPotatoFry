@@ -332,6 +332,27 @@ export type InviteMetadata = {
   defaultSplitBps?: number;
 };
 
+// --- Statements (spec §11: monthly statement to co-owners on the 1st) ---
+
+export const statements = pgTable(
+  "statements",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    coOwnerId: uuid("co_owner_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    year: integer("year").notNull(),
+    month: integer("month").notNull(),
+    htmlUrl: text("html_url").notNull(),
+    totalShareCents: integer("total_share_cents").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("statements_user_month_idx").on(t.coOwnerId, t.year, t.month),
+    check("statements_month_range", sql`${t.month} >= 1 AND ${t.month} <= 12`),
+  ],
+);
+
 // --- Notification preferences (spec §11: per channel per type) ----------
 
 export const notificationPrefs = pgTable(

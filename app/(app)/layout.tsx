@@ -6,7 +6,7 @@ import { makeT } from "@/i18n/get-messages";
 // Every page in the app shell reads the auth cookie / DB; never prerender.
 export const dynamic = "force-dynamic";
 
-type NavKey = "dashboard" | "properties" | "tax" | "people" | "settings";
+type NavKey = "dashboard" | "properties" | "tax" | "people" | "settings" | "statements";
 
 const NAV: Record<Role, Array<{ href: string; key: NavKey }>> = {
   owner: [
@@ -19,6 +19,7 @@ const NAV: Record<Role, Array<{ href: string; key: NavKey }>> = {
   co_owner: [
     { href: "/dashboard", key: "dashboard" },
     { href: "/properties", key: "properties" },
+    { href: "/statements", key: "statements" },
     { href: "/settings", key: "settings" },
   ],
   manager: [

@@ -5,7 +5,12 @@ import sharp from "sharp";
 const MAX_BYTES = 10 * 1024 * 1024; // 10 MB per spec §9
 const MAX_DIMENSION = 2000; // long-edge resize per spec §9
 
-export type UploadKind = "property-photo" | "expense-receipt" | "lease-pdf" | "work-photo";
+export type UploadKind =
+  | "property-photo"
+  | "expense-receipt"
+  | "lease-pdf"
+  | "work-photo"
+  | "statement";
 
 // Server-side upload. Caller is expected to have validated the file via
 // Zod / form parsing first; we re-check size and resize images here.
