@@ -15,6 +15,34 @@
       "when": 1777800400000,
       "tag": "0001_rls_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1777811509812,
+      "tag": "0002_add_ical_token",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1777811737562,
+      "tag": "0003_add_statements",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1777811800000,
+      "tag": "0004_statements_rls",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1777811900000,
+      "tag": "0005_handover_rls",
+      "breakpoints": true
     }
   ]
 }

@@ -1,0 +1,23 @@
+{
+  "common": {
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "back": "Atrás"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "properties": "Propiedades",
+    "tax": "Impuestos",
+    "people": "Personas",
+    "settings": "Ajustes",
+    "statements": "Resúmenes"
+  },
+  "messages": {
+    "translate": "Traducir",
+    "showOriginal": "Ver original",
+    "translateAll": "Traducir todo"
+  }
+}

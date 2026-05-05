@@ -67,6 +67,18 @@ export async function sendApprovalRequestEmail(args: {
   await send({ to: args.to, subject, htmlBody: html, textBody: text });
 }
 
+export async function sendStatementEmail(args: {
+  to: string;
+  monthLabel: string;
+  url: string;
+}) {
+  const subject = `Your statement for ${args.monthLabel}`;
+  const text = `Your monthly statement is ready: ${args.url}`;
+  const html = `<p>Your monthly statement for <strong>${escape(args.monthLabel)}</strong> is ready.</p>
+<p><a href="${args.url}">View statement</a></p>`;
+  await send({ to: args.to, subject, htmlBody: html, textBody: text });
+}
+
 function escape(s: string): string {
   return s
     .replace(/&/g, "&amp;")

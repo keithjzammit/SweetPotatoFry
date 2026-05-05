@@ -90,6 +90,8 @@ export const users = pgTable("users", {
   // Spec §4: encrypted at rest. Stored as ciphertext base64; encrypt in app layer.
   googleRefreshToken: text("google_refresh_token"),
   pushSubscriptions: jsonb("push_subscriptions").$type<PushSubscriptionJson[]>().notNull().default(sql`'[]'::jsonb`),
+  // Per-user secret used in the public iCal feed URL (spec §8). Rotatable.
+  icalToken: varchar("ical_token", { length: 64 }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -329,6 +331,27 @@ export type InviteMetadata = {
   propertyIds?: string[];
   defaultSplitBps?: number;
 };
+
+// --- Statements (spec §11: monthly statement to co-owners on the 1st) ---
+
+export const statements = pgTable(
+  "statements",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    coOwnerId: uuid("co_owner_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    year: integer("year").notNull(),
+    month: integer("month").notNull(),
+    htmlUrl: text("html_url").notNull(),
+    totalShareCents: integer("total_share_cents").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("statements_user_month_idx").on(t.coOwnerId, t.year, t.month),
+    check("statements_month_range", sql`${t.month} >= 1 AND ${t.month} <= 12`),
+  ],
+);
 
 // --- Notification preferences (spec §11: per channel per type) ----------
 
